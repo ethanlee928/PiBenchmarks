@@ -901,32 +901,6 @@ IOZone=$(echo "$IOZone" | sed '/^[[:space:]]*$/d' | grep -v 'Contrib\|Rhine\|Lan
 echo "$IOZone"
 Print_Style "RandRead: $IO4kRandRead - RandWrite: $IO4kRandWrite - Read: $IO4kRead - Write: $IO4kWrite" "$YELLOW"
 
-# Get brand information
-Print_Style "Enter a description of your storage and setup (Example: Kingston A400 SSD on Pi 4 using StarTech SATA to USB adapter)" $GREEN
-read -r -t 0.001 </dev/tty
-read -r -p 'Description: ' Brand </dev/tty
-Print_Style "(Optional) Enter alias to use on benchmark results.  Leave blank for completely anonymous." $GREEN
-read -r -t 0.001 </dev/tty
-read -r -p 'Alias (leave blank for Anonymous): ' UserAlias </dev/tty
-if [[ ! "$UserAlias" ]]; then UserAlias="Anonymous"; fi
-
-# Submit results
-tmpUdev=$(echo -e "$Test_udevadm" >tmpudev)
-tmpInxi=$(echo -e "$Test_inxi" >tmpinxi)
-tmpLshw=$(echo -e "$Test_lshw" >tmplshw)
-tmpHwinfo=$(echo -e "$Test_hwinfo" >tmphwinfo)
-tmpDmi=$(echo -e "$Test_dmidecode" >tmpdmi)
-tmpDmesg=$(echo -e "$Test_dmesg" >tmpdmesg)
-tmpSmart=$(echo -e "$Test_smartctl" >tmpsmart)
-tmpParm=$(echo -e "$Test_sdparm" >tmpparm)
-Submit=$(curl -s -k -L --form "form_tools_form_id=1" --form "DDTest=$DDWrite" --form "DDWriteSpeed=$DDWriteResult" --form "HDParmDisk=$HDParmDisk" --form "HDParmCached=$HDParmCached" --form "HDParm=$HDParm" --form "fio4kRandRead=$fio4kRandRead" --form "fio4kRandWrite=$fio4kRandWrite" --form "fio4kRandWriteIOPS=$fio4kRandWriteIOPS" --form "fio4kRandReadIOPS=$fio4kRandReadIOPS" --form "fio4kRandWriteSpeed=$fio4kRandWriteSpeed" --form "fio4kRandReadSpeed=$fio4kRandReadSpeed" --form "IOZone=$IOZone" --form "IO4kRandRead=$IO4kRandRead" --form "IO4kRandWrite=$IO4kRandWrite" --form "IO4kRead=$IO4kRead" --form "IO4kWrite=$IO4kWrite" --form "Drive=$BootDrive" --form "Test_hdparm=$Test_hdparm" --form "Test_lsblk=$Test_lsblk" --form "Test_findmnt=$Test_findmnt" --form "Test_lsusb=$Test_lsusb" --form "Test_lshw=<tmplshw" --form "Test_lspci=$Test_lspci" --form "Test_lsscsi=$Test_lsscsi" --form "Test_lscpu=$Test_lscpu" --form "Test_diskbyid=$Test_diskbyid" --form "Test_df=$Test_df" --form "Test_cpuinfo=$Test_cpuinfo" --form "Test_udevadm=<tmpudev" --form "Test_dmesg=<tmpdmesg" --form "Test_fstab=$Test_fstab" --form "Test_inxi=<tmpinxi" --form "Test_hwinfo=<tmphwinfo" --form "Test_dmidecode=<tmpdmi" --form "Test_nvme=$Test_nvme" --form "Test_smartctl=<tmpsmart" --form "Model=$Model" --form "Capacity=$Capacity" --form "Manufacturer=$Manufacturer" --form "Product=$Product" --form "DateManufactured=$DateManufactured" --form "Note=$Brand" --form "Class=$Class" --form "OCR=$OCR" --form "SSR=$SSR" --form "SCR=$SCR" --form "CID=$CID" --form "CSD=$CSD" --form "UserAlias=$UserAlias" --form "HostModel=$HostModel" --form "HostSDClock=$HostSDClock" --form "HostConfig=$HostConfig" --form "HostCPUClock=$HostCPUClock" --form "HostCoreClock=$HostCoreClock" --form "HostRAMClock=$HostRAMClock" --form "HostArchitecture=$HostArchitecture" --form "HostOS=$HostOS" --form "HostOSInfo=$HostOSInfo" --form "HostManufacturer=$HostManufacturer" --form "Test_sdparm=<tmpparm" https://pibenchmarks.com/formtools/process.php)
-rm -rf tmpudev tmpinxi tmplshw tmphwinfo tmpdmi tmpdmsg tmpsmart tmpparm
-SubmitResult=""
-SubmitResult=$(echo "$Submit" | grep submission)
-if [ -n "$SubmitResult" ]; then
-  echo "Result submitted successfully and will appear live on https://pibenchmarks.com within a couple of minutes."
-fi
-
 # Calculate score
 Score=$(echo "scale=2; $DDWriteResult * 1024" | bc)
 ScratchPad=$(echo "scale=2; $fio4kRandReadIOPS * 4" | bc)

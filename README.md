@@ -17,10 +17,10 @@ View the full results at: https://pibenchmarks.com/<br>
 
 <h2>Running the Benchmark</h2>
 To run the benchmark type/paste:<br>
-<pre>sudo curl https://raw.githubusercontent.com/TheRemote/PiBenchmarks/master/Storage.sh | sudo bash</pre><br>
+<pre>sudo curl https://raw.githubusercontent.com/ethanlee928/PiBenchmarks/master/Storage.sh | sudo bash</pre><br>
 If you want to choose which drive to test you can also use:<br>
 <pre>
-wget https://raw.githubusercontent.com/TheRemote/PiBenchmarks/master/Storage.sh<br>
+wget https://raw.githubusercontent.com/ethanlee928/PiBenchmarks/master/Storage.sh<br>
 chmod +x Storage.sh<br>
 sudo ./Storage.sh /path/to/storage</pre><br>
 
